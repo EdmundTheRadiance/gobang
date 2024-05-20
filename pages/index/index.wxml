@@ -1,0 +1,4 @@
+<navigation-bar title="Weixin" back="{{false}}" color="black" background="#FFF"></navigation-bar>
+<scroll-view class="scroll-area" type="list" scroll-y>
+  <view class="intro">欢迎使用代码片段，可在控制台查看代码片段的说明和文档</view>
+</scroll-view>
