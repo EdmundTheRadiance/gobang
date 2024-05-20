@@ -1,26 +1,26 @@
 {
-  "appid": "wxcb43357b2c77d46d",
-  "compileType": "miniprogram",
-  "libVersion": "3.4.3",
-  "packOptions": {
-    "ignore": [],
-    "include": []
-  },
+  "description": "项目配置文件。",
   "setting": {
-    "coverView": true,
+    "urlCheck": true,
     "es6": true,
     "postcss": true,
     "minified": true,
-    "enhance": true,
-    "showShadowRootInWxmlPanel": true,
-    "packNpmRelationList": [],
     "babelSetting": {
       "ignore": [],
       "disablePlugins": [],
       "outputPath": ""
     }
   },
+  "compileType": "game",
+  "libVersion": "2.20.1",
+  "appid": "wx66f80e1f220e0038",
+  "projectname": "quickstart",
   "condition": {},
+  "isGameTourist": false,
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  },
   "editorSetting": {
     "tabIndent": "insertSpaces",
     "tabSize": 2
