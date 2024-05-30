@@ -16,7 +16,6 @@
   "appid": "wx66f80e1f220e0038",
   "projectname": "quickstart",
   "condition": {},
-  "isGameTourist": false,
   "packOptions": {
     "ignore": [],
     "include": []

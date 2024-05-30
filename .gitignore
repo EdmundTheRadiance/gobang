@@ -1,0 +1,9 @@
+.serverless/
+node_modules/
+dist/
+coverage/
+.env
+
+
+docs/*
+!docs/index.html
