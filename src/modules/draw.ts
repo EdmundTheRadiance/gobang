@@ -17,8 +17,8 @@ export default {
   init(ctx: CanvasRenderingContext2D) {
     event.on(EventName["INTERFACE.CLICK"], ({ x, y }: { x: number, y: number }) => {
       const { width } = ctx.canvas;
-      const cellWidth = (width - padding * 2) / COLUMN_NUM;
-      const cellHeight = (width - padding * 2) / ROW_NUM;
+      const cellWidth = (width - padding * 2) / (COLUMN_NUM - 1);
+      const cellHeight = (width - padding * 2) / (ROW_NUM - 1);
       const touchPadding = padding - cellWidth / 2;
       if (
         x > touchPadding
@@ -26,12 +26,10 @@ export default {
         && y > marginTop + touchPadding
         && y < width + marginTop - touchPadding
       ) {
-        const _x = x - padding;
-        const _y = y - marginTop - padding;
+        const _x = x - touchPadding;
+        const _y = y - marginTop - touchPadding;
         let col = Math.floor(_x / cellWidth);
         let row = Math.floor(_y / cellHeight);
-        (_x % cellWidth) > cellWidth / 2 && (col++);
-        (_y % cellHeight) > cellHeight / 2 && (row++);
         event.trigger(EventName["CELL.CLICK"], [row, col]);
       }
     });
@@ -60,14 +58,14 @@ export default {
     ctx.fillRect(0, marginTop, width, width);
 
     // 计算每个格子的大小
-    const cellWidth = (width - padding * 2) / COLUMN_NUM;
-    const cellHeight = (width - padding * 2) / ROW_NUM;
+    const cellWidth = (width - padding * 2) / (COLUMN_NUM - 1);
+    const cellHeight = (width - padding * 2) / (ROW_NUM - 1);
 
     // 设置线条颜色
     ctx.strokeStyle = "#000000";
 
     // 绘制行
-    for (let i = 0; i <= ROW_NUM; i++) {
+    for (let i = 0; i < ROW_NUM; i++) {
       ctx.beginPath();
       ctx.moveTo(padding, i * cellHeight + marginTop + padding);
       ctx.lineTo(width - padding, i * cellHeight + marginTop + padding);
@@ -75,7 +73,7 @@ export default {
     }
 
     // 绘制列
-    for (let j = 0; j <= COLUMN_NUM; j++) {
+    for (let j = 0; j < COLUMN_NUM; j++) {
       ctx.beginPath();
       ctx.moveTo(j * cellWidth + padding, marginTop + padding);
       ctx.lineTo(j * cellWidth + padding, width + marginTop - padding);
@@ -93,8 +91,8 @@ export default {
   drawPiece(ctx: CanvasRenderingContext2D, pieceType: PieceType, row: number, col: number) {
     const { width } = ctx.canvas;
     // 计算每个格子的大小
-    const cellWidth = (width - padding * 2) / COLUMN_NUM;
-    const cellHeight = (width - padding * 2) / ROW_NUM;
+    const cellWidth = (width - padding * 2) / (COLUMN_NUM - 1);
+    const cellHeight = (width - padding * 2) / (ROW_NUM - 1);
     const centerX = col * cellWidth + padding;
     const centerY = row * cellHeight + padding + marginTop;
     const radius = Math.min(cellWidth, cellHeight) / 2 * 0.75;  // 0.75 是为了让棋子看起来更小一些

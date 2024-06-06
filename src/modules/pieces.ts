@@ -1,7 +1,7 @@
 import { COLUMN_NUM, ROW_NUM } from "../config";
-import { Piece } from "../nodels/Piece";
+import { Piece } from "../models/Piece";
 import { deepCloneObject } from "./utils";
-import { EventName, PieceType } from "../typings/index";
+import { EventName, NextPieceType, PieceType } from "../typings/index";
 import event from "./event";
 
 const rows = ROW_NUM;
@@ -15,11 +15,6 @@ export default {
     event.on(EventName["CELL.CLICK"], ([ row, col ]: number[]) => {
       if (!pieces[row][col]) {
         this.addPiece(curPieceType, row, col);
-        if (this.checkWin(curPieceType, row, col)) {
-          event.trigger(EventName["WIN"], curPieceType);
-          return;
-        }
-        curPieceType = curPieceType === PieceType.WHITE ? PieceType.BLACK : PieceType.WHITE;
       }
     });
 
@@ -41,6 +36,12 @@ export default {
   addPiece(pieceType: PieceType, row: number, col: number) {
     if (pieces[row][col] === null) {
       pieces[row][col] = new Piece(pieceType);
+      if (this.checkWin(curPieceType, row, col)) {
+        event.trigger(EventName["WIN"], curPieceType);
+        return;
+      }
+      curPieceType = NextPieceType[curPieceType];
+      event.trigger(EventName["PIECES.ADD"], [row, col, pieceType]);
       return pieces[row][col];
     } else {
       return null;
