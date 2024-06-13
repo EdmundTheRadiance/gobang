@@ -26,7 +26,6 @@ export default {
     aiPlayers.splice(0, aiPlayers.length);
   },
   isAITurn(pieceType: PieceType) {
-    console.log("🚀 ~ isAITurn ~ gameState.getState() === GameState.PLAYING:", gameState.getState() === GameState.PLAYING)
     return gameState.getState() === GameState.PLAYING && aiPlayers.findIndex(ai => ai.isAITurn(pieceType)) !== -1;
   }
 }

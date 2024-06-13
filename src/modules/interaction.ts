@@ -1,5 +1,5 @@
 /// <reference path="../../node_modules/minigame-api-typings/index.d.ts" />
-import { EventName, NextPieceType } from "../typings/index";
+import { EventName, NextPieceType, PieceType } from "../typings/index";
 import ai from "./ai";
 import event from "./event";
 let restart = false;
@@ -7,15 +7,14 @@ let ignore = false;
 
 export default {
   init() {
+    ignore = ai.isAITurn(PieceType.WHITE);
     // 监听触摸事件
     wx.onTouchStart((e: WechatMinigame.OnTouchStartListenerResult) => {
-      if (ignore) {
-        return;
-      }
       if (restart) {
+        ignore = ai.isAITurn(PieceType.WHITE);
         event.trigger(EventName["RESTART"]);
         restart = false;
-      } else {
+      } else if (!ignore) {
         event.trigger(EventName["INTERFACE.CLICK"], { x: e.touches[0].clientX, y: e.touches[0].clientY });
       }
     });

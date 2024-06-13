@@ -1,7 +1,7 @@
 import { EventName } from "../typings/index";
 
 const eventHub: { [key in EventName] ? : Function[] } = {};
-export default {
+const mod = {
   on(name: EventName, handler: Function): void {
     eventHub[name] = (eventHub[name] || []).concat(handler);
   },
@@ -21,3 +21,7 @@ export default {
     }
   }
 }
+
+export default mod;
+debugger;
+(window as any).eventHub = mod;
