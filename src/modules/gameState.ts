@@ -22,6 +22,7 @@ enterStateFuncMap[GameState.END] = () => {
 }
 enterStateFuncMap[GameState.PLAYING] = () => {
   ai.createAIPlayer(PieceType.BLACK);
+  // ai.createAIPlayer(PieceType.WHITE);
 }
 
 const mod = {

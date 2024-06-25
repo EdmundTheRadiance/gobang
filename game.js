@@ -14,8 +14,8 @@ function loop() {
 
 function init() {
   const ctx = canvas.getContext('2d');
-  gameState.init();
   interaction.init();
+  gameState.init();
   draw.init(ctx);
   pieces.init();
   ai.init();

@@ -12,8 +12,8 @@ export default {
     wx.onTouchStart((e: WechatMinigame.OnTouchStartListenerResult) => {
       if (restart) {
         ignore = ai.isAITurn(PieceType.WHITE);
-        event.trigger(EventName["RESTART"]);
         restart = false;
+        event.trigger(EventName["RESTART"]);
       } else if (!ignore) {
         event.trigger(EventName["INTERFACE.CLICK"], { x: e.touches[0].clientX, y: e.touches[0].clientY });
       }

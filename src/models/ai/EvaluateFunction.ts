@@ -8,18 +8,20 @@ export class EvaluateFunction extends AIBase {
   getMove(): [row: number, col: number] {
     const allPossibleMove = this.getAllPossibleMove();
     let maxScore = -Infinity;
-    let bestMove: [row: number, col: number] = [0, 0];
+    let bestMove: [row: number, col: number][] = [[0, 0]];
     const pieceList = pieces.getPieces();
     allPossibleMove.forEach(postion => {
       pieceList[postion[0]][postion[1]] = new Piece(this.pieceType);
       const score = this.evaluate(pieceList);
       if (score > maxScore) {
         maxScore = score;
-        bestMove = postion;
+        bestMove = [postion];
+      } else if (score === maxScore) {
+        bestMove.push(postion);
       }
       pieceList[postion[0]][postion[1]] = null;
     });
-    return bestMove;
+    return bestMove[~~(Math.random() * bestMove.length)];
   }
   evaluate(pieceList: (Piece | null)[][]): number {
     let score = 0;
