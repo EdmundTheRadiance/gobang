@@ -28,9 +28,9 @@ enterStateFuncMap[GameState.END] = () => {
 }
 enterStateFuncMap[GameState.PLAYING] = () => {
   // setTimeout(() => {
-  ai.createAIPlayer(PieceType.WHITE, 'OptimizationEvaluateFunction');
-  //   ai.createAIPlayer(PieceType.BLACK, 'EvaluateFunction');
-  //   // ai.createAIPlayer(PieceType.BLACK, 'OptimizationEvaluateFunction');
+  // ai.createAIPlayer(PieceType.WHITE, 'OptimizationEvaluateFunction');
+  // ai.createAIPlayer(PieceType.BLACK, 'EvaluateFunction');
+  ai.createAIPlayer(PieceType.BLACK, 'OptimizationEvaluateFunction');
   ai.aiMove(PieceType.WHITE);
   // }, 1000);
 }
