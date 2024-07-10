@@ -1,6 +1,7 @@
-import { StringPatternScore } from "../../config";
+import { Directions, StringPatternScore } from "../../config";
 import { Piece } from "../Piece";
 import { EvaluateFunction } from "./EvaluateFunction";
+import pieces from "../../modules/pieces";
 
 const opStrMap = {
   '0': '1',
@@ -11,59 +12,35 @@ const opStrMap = {
 export class OptimizationEvaluateFunction extends EvaluateFunction {
   evaluate(pieceList: (Piece | null)[][]): number {
     let score = 0;
-    const allPiecesString: string[] = [];
-    // 所有行字符串
+    const rowNum = pieceList.length;
+    const colNum = pieceList[0].length;
+    const cellChars: string[][] = Array.from({length: (rowNum + colNum) * 3 - 2}, () => []);
+    const mid = (rowNum + colNum) / 2 - 1;
     for (let i = 0; i < pieceList.length; i++) {
-      allPiecesString.push(pieceList[i].map((piece) => {
-        return piece ? piece.getPieceType() === this.pieceType ? '1' : '0' : '_';
-      }).join(''));
-    }
-    // 所有列字符串
-    for (let i = 0; i < pieceList[0].length; i++) {
-      const strs: string[] = [];
       for (let j = 0; j < pieceList.length; j++) {
-        const piece = pieceList[j][i];
-        strs.push(piece ? piece.getPieceType() === this.pieceType ? '1' : '0' : '_');
+        const piece = pieceList[i][j];
+        const char = piece ? piece.getPieceType() === this.pieceType ? '1' : '0' : '_';
+        cellChars[i][j] = char;
+        cellChars[j + rowNum][i] = char;
+        cellChars[(j - i + mid) + rowNum + colNum][Math.min(i ,j)] = char;
+        cellChars[(j + i) + (rowNum + colNum) * 2 - 1].push(char);
+        // 计算位置分数
         if (piece?.getPieceType() === this.pieceType) {
-          score += this.getPositionAdvance(pieceList, i , j);
+          score += this.getPositionAdvance(pieceList, i, j);
         }
       }
-      allPiecesString.push(strs.join(''));
     }
-    // 所有斜线字符串
-    for (let i = 0; i < pieceList[0].length; i++) {
-      for (let dir of [[1, -1], [1, 1]]) {
-        let j = 0;
-        const strs: string[] = [];
-        do {
-          const piece = pieceList[dir[0] * j][i + dir[1] * j];
-          strs.push(piece ? piece.getPieceType() === this.pieceType ? '1' : '0' : '_');
-          j++;
-        } while (i + dir[1] * j >= 0 && i + dir[1] * j < pieceList[0].length);
-        allPiecesString.push(strs.join(''));
-      }
-    }
-    for (let i = 1; i < pieceList.length; i++) {
-      let strs1: string[] = [];
-      let strs2: string[] = [];
-      let j = 0;
-      do {
-        const piece1 = pieceList[i + j][j];
-        strs1.push(piece1 ? piece1.getPieceType() === this.pieceType ? '1' : '0' : '_');
-        const piece2 = pieceList[i + j][pieceList[0].length - 1 - j];
-        strs2.push(piece2 ? piece2.getPieceType() === this.pieceType ? '1' : '0' : '_');
-        j++;
-      } while (i + j < pieceList.length);
-      allPiecesString.push(strs1.join(''));
-      allPiecesString.push(strs2.join(''));
-    }
-    const allOpPiecesString = allPiecesString.map(str => str.split('').map(s => opStrMap[s]).join(''));
+    const allPiecesString: string[] = cellChars.map(e => e.join(''));
+    const allOpPiecesString = cellChars.map(e => e.map(s => opStrMap[s]).join(''));
     return score + this.getAllstrsScore(allPiecesString) - this.getAllstrsScore(allOpPiecesString);
   }
   getAllstrsScore(allPiecesString: string[]) {
     let score = 0;
     for (let i = 0; i < allPiecesString.length; i++) {
-      let str = allPiecesString[i];
+      let str = `0${allPiecesString[i]}0`;
+      if (!str.includes('1')) {
+        continue;
+      }
       for (let j = 0; j < StringPatternScore.length; j++) {
         const pattern = StringPatternScore[j].pattern;
         let index = str.indexOf(pattern);
@@ -76,5 +53,24 @@ export class OptimizationEvaluateFunction extends EvaluateFunction {
       }
     }
     return score;
+  }
+  getAllPossibleMove() {
+    const pieceList = pieces.getPieces();
+    const allPossibleMove: [number, number][] = [];
+    pieceList.forEach((row, rowNum) => {
+      row.forEach((piece, colNum) => {
+        if (!piece) {
+          for (let i = 0; i < Directions.length; i++) {
+            const direction = Directions[i];
+            // 当前空位贴着其他棋子，才会评估
+            if (pieceList[rowNum + direction[0]]?.[colNum + direction[1]]) {
+              allPossibleMove.push([rowNum, colNum]);
+              break;
+            }
+          }
+        }
+      });
+    });
+    return allPossibleMove;
   }
 }

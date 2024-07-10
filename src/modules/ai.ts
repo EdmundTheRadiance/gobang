@@ -3,10 +3,14 @@ import { EventName, GameState, NextPieceType, PieceType } from "../typings/index
 import event from "./event";
 import pieces from "./pieces";
 import gameState from "./gameState";
-// import { EvaluateFunction } from "../models/ai/EvaluateFunction";
+import { EvaluateFunction } from "../models/ai/EvaluateFunction";
 import { OptimizationEvaluateFunction } from "../models/ai/OptimizedEvaluateFunction";
 
 const aiPlayers: AIBase[] = [];
+const aiScripts = {
+  EvaluateFunction,
+  OptimizationEvaluateFunction
+}
 
 export default {
   init() {
@@ -18,17 +22,14 @@ export default {
     });
     this.aiMove(PieceType.WHITE);
   },
-  createAIPlayer(pieceType: PieceType) {
-    // const ai = new EvaluateFunction(pieceType);
-    const ai = new OptimizationEvaluateFunction(pieceType);
+  createAIPlayer(pieceType: PieceType, script: string) {
+    const ai = new aiScripts[script](pieceType);
     aiPlayers.push(ai);
   },
   aiMove(pieceType: PieceType) {
     aiPlayers.forEach(ai => {
-      if (this.isAITurn(pieceType)) {
-        const justNow = Date.now();
+      if (gameState.getState() === GameState.PLAYING && ai.isAITurn(pieceType)) {
         const position = ai.getMove();
-        console.log(Date.now() - justNow);
         pieces.addPiece(pieceType, ...position);
       }
     });

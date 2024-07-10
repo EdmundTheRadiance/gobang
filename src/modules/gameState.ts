@@ -5,6 +5,12 @@ import event from "./event";
 let currentState: GameState = GameState.END;
 const enterStateFuncMap: { [key in GameState] ? : () => void } = {};
 const exitStateFuncMap: { [key in GameState] ? : () => void } = {};
+let autoPlayGameNum = 1000;
+const result = {
+  [PieceType.WHITE]: 0,
+  [PieceType.BLACK]: 0,
+}
+let drawTimeout = 0; // 和棋处理
 
 const isValidTransition = function(toState: GameState): boolean {
   switch (currentState) {
@@ -21,16 +27,22 @@ enterStateFuncMap[GameState.END] = () => {
   ai.clearAIPlayers();
 }
 enterStateFuncMap[GameState.PLAYING] = () => {
-  ai.createAIPlayer(PieceType.BLACK);
-  // ai.createAIPlayer(PieceType.WHITE);
+  // setTimeout(() => {
+  ai.createAIPlayer(PieceType.WHITE, 'OptimizationEvaluateFunction');
+  //   ai.createAIPlayer(PieceType.BLACK, 'EvaluateFunction');
+  //   // ai.createAIPlayer(PieceType.BLACK, 'OptimizationEvaluateFunction');
+  ai.aiMove(PieceType.WHITE);
+  // }, 1000);
 }
 
 const mod = {
   GameState,
   init() {
     mod.transitionTo(GameState.PLAYING);
+    // event.on(EventName["WIN"], (pieceType: PieceType) => {
     event.on(EventName["WIN"], () => {
       mod.transitionTo(GameState.END);
+      // mod.autoPlay(pieceType);
     });
     event.on(EventName["RESTART"], () => {
       mod.transitionTo(GameState.PLAYING);
@@ -48,6 +60,31 @@ const mod = {
   },
   getState() {
     return currentState;
+  },
+  autoPlay(pieceType: PieceType) {
+    if (drawTimeout) {
+      clearTimeout(drawTimeout);
+      drawTimeout = 0;
+    }
+    drawTimeout = setTimeout(() => {
+      mod.transitionTo(GameState.END);
+      // 10s后还没决出胜负，可能是和棋，直接重开
+      event.trigger(EventName["RESTART"]);
+      console.log("🚀 ~ event.on ~ result:", result)
+    }, 10 * 1000);
+    result[pieceType]++;
+    autoPlayGameNum--;
+    if (autoPlayGameNum > 0) {
+      setTimeout(() => {
+        event.trigger(EventName["RESTART"]);
+      }, 100);
+    } else {
+      console.log("🚀 ~ event.on ~ result:", result)
+      if (drawTimeout) {
+        clearTimeout(drawTimeout);
+        drawTimeout = 0;
+      }
+    }
   }
 }
 
