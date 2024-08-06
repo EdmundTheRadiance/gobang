@@ -5,11 +5,13 @@ import pieces from "./pieces";
 import gameState from "./gameState";
 import { EvaluateFunction } from "../models/ai/EvaluateFunction";
 import { OptimizationEvaluateFunction } from "../models/ai/OptimizedEvaluateFunction";
+import { MinMax } from "../models/ai/MinMax";
 
 const aiPlayers: AIBase[] = [];
 const aiScripts = {
   EvaluateFunction,
-  OptimizationEvaluateFunction
+  OptimizationEvaluateFunction,
+  MinMax
 }
 
 export default {
@@ -29,8 +31,12 @@ export default {
   aiMove(pieceType: PieceType) {
     aiPlayers.forEach(ai => {
       if (gameState.getState() === GameState.PLAYING && ai.isAITurn(pieceType)) {
+        const now = Date.now();
         const position = ai.getMove();
+        console.log(Date.now() - now);
+        // setTimeout(() => {
         pieces.addPiece(pieceType, ...position);
+        // }, 2000);
       }
     });
   },

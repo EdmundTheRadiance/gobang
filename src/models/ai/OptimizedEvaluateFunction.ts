@@ -54,9 +54,10 @@ export class OptimizationEvaluateFunction extends EvaluateFunction {
     }
     return score;
   }
-  getAllPossibleMove() {
-    const pieceList = pieces.getPieces();
+  getAllPossibleMove(list?: (Piece | null)[][]): [number, number][] {
+    const pieceList = list || pieces.getPieces();
     const allPossibleMove: [number, number][] = [];
+    let hasPiece = false;
     pieceList.forEach((row, rowNum) => {
       row.forEach((piece, colNum) => {
         if (!piece) {
@@ -68,9 +69,15 @@ export class OptimizationEvaluateFunction extends EvaluateFunction {
               break;
             }
           }
+        } else {
+          hasPiece = true;
         }
       });
     });
+    if (!hasPiece) {
+      const mid = ~~(pieceList.length / 2 - 0.5)
+      return [[mid, mid]];
+    }
     return allPossibleMove;
   }
 }

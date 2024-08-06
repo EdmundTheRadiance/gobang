@@ -94,8 +94,8 @@ export class EvaluateFunction extends AIBase {
     const distance = Math.max(Math.abs(row - mid), Math.abs(col - mid));
     return MaxPositionAdvance * Math.pow(PositionAdvanceAttenuation, ~~distance);
   }
-  getAllPossibleMove() {
-    const pieceList = pieces.getPieces();
+  getAllPossibleMove(list?: (Piece | null)[][]) {
+    const pieceList = list || pieces.getPieces();
     const allPossibleMove: [number, number][] = [];
     pieceList.forEach((row, rowNum) => {
       row.forEach((piece, colNum) => {
