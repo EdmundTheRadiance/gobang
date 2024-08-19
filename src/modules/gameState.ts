@@ -28,9 +28,10 @@ enterStateFuncMap[GameState.END] = () => {
 }
 enterStateFuncMap[GameState.PLAYING] = () => {
   // setTimeout(() => {
-  // ai.createAIPlayer(PieceType.WHITE, 'OptimizationEvaluateFunction');
   // ai.createAIPlayer(PieceType.BLACK, 'EvaluateFunction');
-  ai.createAIPlayer(PieceType.BLACK, 'MinMax');
+  // ai.createAIPlayer(PieceType.BLACK, 'OptimizationEvaluateFunction');
+  // ai.createAIPlayer(PieceType.BLACK, 'MinMax');
+  ai.createAIPlayer(PieceType.BLACK, 'AlphaBeta');
   ai.aiMove(PieceType.WHITE);
   // }, 1000);
 }
@@ -75,11 +76,14 @@ const mod = {
     result[pieceType]++;
     autoPlayGameNum--;
     if (autoPlayGameNum > 0) {
+      console.log("🚀 ~ event.on ~ result:", result)
+      event.trigger(EventName["EVALUATION.END"]);
       setTimeout(() => {
         event.trigger(EventName["RESTART"]);
       }, 100);
     } else {
       console.log("🚀 ~ event.on ~ result:", result)
+      event.trigger(EventName["EVALUATION.END"]);
       if (drawTimeout) {
         clearTimeout(drawTimeout);
         drawTimeout = 0;

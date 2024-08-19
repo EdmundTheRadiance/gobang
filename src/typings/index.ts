@@ -19,4 +19,5 @@ export enum EventName {
   'WIN',
   'RESTART',
   'PIECES.ADD',
+  'EVALUATION.END',
 }

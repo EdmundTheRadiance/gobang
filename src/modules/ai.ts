@@ -6,12 +6,19 @@ import gameState from "./gameState";
 import { EvaluateFunction } from "../models/ai/EvaluateFunction";
 import { OptimizationEvaluateFunction } from "../models/ai/OptimizedEvaluateFunction";
 import { MinMax } from "../models/ai/MinMax";
+import { AlphaBeta } from "../models/ai/AlphaBeta";
 
 const aiPlayers: AIBase[] = [];
 const aiScripts = {
   EvaluateFunction,
   OptimizationEvaluateFunction,
-  MinMax
+  MinMax,
+  AlphaBeta
+}
+
+const TimeCostMap = {
+  [PieceType.WHITE]: 0,
+  [PieceType.BLACK]: 0,
 }
 
 export default {
@@ -21,6 +28,9 @@ export default {
     });
     event.on(EventName["RESTART"], () => {
       this.aiMove(PieceType.WHITE);
+    });
+    event.on(EventName["EVALUATION.END"], () => {
+      console.log("🚀 ~ TimeCostMap:", TimeCostMap)
     });
     this.aiMove(PieceType.WHITE);
   },
@@ -33,7 +43,9 @@ export default {
       if (gameState.getState() === GameState.PLAYING && ai.isAITurn(pieceType)) {
         const now = Date.now();
         const position = ai.getMove();
-        console.log(Date.now() - now);
+        const timeCost = Date.now() - now;
+        TimeCostMap[pieceType] += timeCost;
+        // console.log(timeCost);
         // setTimeout(() => {
         pieces.addPiece(pieceType, ...position);
         // }, 2000);
