@@ -5,7 +5,7 @@ import event from "./event";
 let currentState: GameState = GameState.END;
 const enterStateFuncMap: { [key in GameState] ? : () => void } = {};
 const exitStateFuncMap: { [key in GameState] ? : () => void } = {};
-let autoPlayGameNum = 1000;
+let autoPlayGameNum = 10;
 const result = {
   [PieceType.WHITE]: 0,
   [PieceType.BLACK]: 0,
@@ -27,13 +27,15 @@ enterStateFuncMap[GameState.END] = () => {
   ai.clearAIPlayers();
 }
 enterStateFuncMap[GameState.PLAYING] = () => {
-  // setTimeout(() => {
+  setTimeout(() => {
   // ai.createAIPlayer(PieceType.BLACK, 'EvaluateFunction');
   // ai.createAIPlayer(PieceType.BLACK, 'OptimizationEvaluateFunction');
   // ai.createAIPlayer(PieceType.BLACK, 'MinMax');
-  ai.createAIPlayer(PieceType.BLACK, 'AlphaBeta');
+  // ai.createAIPlayer(PieceType.WHITE, 'AlphaBeta');
+  // ai.createAIPlayer(PieceType.BLACK, 'IterativeDeepeningSearch');
+  ai.createAIPlayer(PieceType.BLACK, 'HeuristicFunction');
   ai.aiMove(PieceType.WHITE);
-  // }, 1000);
+  }, 1000);
 }
 
 const mod = {
@@ -67,12 +69,12 @@ const mod = {
       clearTimeout(drawTimeout);
       drawTimeout = 0;
     }
-    drawTimeout = setTimeout(() => {
-      mod.transitionTo(GameState.END);
-      // 10s后还没决出胜负，可能是和棋，直接重开
-      event.trigger(EventName["RESTART"]);
-      console.log("🚀 ~ event.on ~ result:", result)
-    }, 10 * 1000);
+    // drawTimeout = setTimeout(() => {
+    //   mod.transitionTo(GameState.END);
+    //   // 10s后还没决出胜负，可能是和棋，直接重开
+    //   event.trigger(EventName["RESTART"]);
+    //   console.log("🚀 ~ event.on ~ result:", result)
+    // }, 10 * 1000);
     result[pieceType]++;
     autoPlayGameNum--;
     if (autoPlayGameNum > 0) {

@@ -4,7 +4,7 @@ import { Piece } from "../Piece";
 import { OptimizationEvaluateFunction } from "./OptimizedEvaluateFunction";
 
 export class MinMax extends OptimizationEvaluateFunction {
-  getMove(): [row: number, col: number] {
+  getMove() {
     const pieceList = pieces.getPieces();
     const { moves = [[0, 0]] } = this.minimax(pieceList, 2, true, this.pieceType)
     const move = moves[~~(Math.random() * moves.length)]

@@ -1,17 +1,35 @@
 import pieces from "../../modules/pieces";
-import { NextPieceType, PieceType } from "../../typings/index";
+import { EvaluateResult, NextPieceType, PieceType } from "../../typings/index";
 import { Piece } from "../Piece";
 import { MinMax } from "./MinMax";
 
 export class AlphaBeta extends MinMax {
-  getMove(): [row: number, col: number] {
+  stopCompute = false;
+  public pruneTime = 0;
+  public evaluateTime = 0;
+  getMove(): [row: number, col: number];
+  getMove(): Promise<[row: number, col: number]>;
+  getMove(): [row: number, col: number] | Promise<[row: number, col: number]> {
     const pieceList = pieces.getPieces();
-    const { moves = [[0, 0]] } = this.alphaBeta(pieceList, 2, true, this.pieceType, -Infinity, Infinity);
-    const move = moves[~~(Math.random() * moves.length)]
-    return move;
+    this.pruneTime = 0;
+    this.evaluateTime = 0;
+    return new Promise(async r => {
+      const { moves = [[0, 0]] } = await this.alphaBeta(pieceList, 3, true, this.pieceType, -Infinity, Infinity);
+      const move = moves[~~(Math.random() * moves.length)];
+      console.log('pruneTime', this.pruneTime, this.evaluateTime)
+      r(move);
+    });
   }
-  alphaBeta(pieceList: (Piece | null)[][], depth: number, getMax: boolean, pieceType: PieceType, alpha: number, beta: number) {
+  async alphaBeta(
+    pieceList: (Piece | null)[][],
+    depth: number,
+    getMax: boolean,
+    pieceType: PieceType,
+    alpha: number,
+    beta: number
+  ): Promise<EvaluateResult> {
     if (depth <= 0) {
+      this.evaluateTime++;
       return { score: this.evaluate(pieceList) };
     }
     const allMoves = this.getAllPossibleMove(pieceList);
@@ -19,9 +37,10 @@ export class AlphaBeta extends MinMax {
     let bestMove: [row: number, col: number][] = [[0, 0]];
     for (const position of allMoves) {
       pieceList[position[0]][position[1]] = new Piece(pieceType);
-      const { score } = this.alphaBeta(pieceList, depth - 1, !getMax, NextPieceType[pieceType], alpha, beta);
+      const { score } = await this.alphaBeta(pieceList, depth - 1, !getMax, NextPieceType[pieceType], alpha, beta);
       if (getMax ? score > beta : score < alpha) {
         pieceList[position[0]][position[1]] = null;
+        this.pruneTime++;
         return { score };
       }
       if (getMax ? score > bestScore : score < bestScore) {
@@ -32,6 +51,11 @@ export class AlphaBeta extends MinMax {
         bestMove.push(position);
       }
       pieceList[position[0]][position[1]] = null;
+
+      if (this.stopCompute) {
+        console.log("🚀 ~ 到时间终止:", { score: bestScore, moves: bestMove }, depth)
+        return { score: bestScore, moves: bestMove };
+      }
     }
     return { score: bestScore, moves: bestMove };
   }

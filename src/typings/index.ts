@@ -21,3 +21,8 @@ export enum EventName {
   'PIECES.ADD',
   'EVALUATION.END',
 }
+
+export interface EvaluateResult {
+  score: number,
+  moves?: [row: number, col: number][]
+};

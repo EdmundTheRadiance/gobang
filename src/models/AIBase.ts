@@ -8,7 +8,7 @@ export class AIBase {
   isAITurn(pieceType: PieceType): boolean {
     return this.pieceType === pieceType;
   }
-  getMove(): [row: number, col: number] {
+  getMove() {
     return [0, 0];
   }
 }

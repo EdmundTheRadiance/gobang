@@ -5,7 +5,7 @@ import { AIBase } from "../AIBase";
 import { Piece } from "../Piece";
 
 export class EvaluateFunction extends AIBase {
-  getMove(): [row: number, col: number] {
+  getMove() {
     const allPossibleMove = this.getAllPossibleMove();
     let maxScore = -Infinity;
     let bestMove: [row: number, col: number][] = [[0, 0]];

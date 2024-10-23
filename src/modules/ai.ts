@@ -7,18 +7,30 @@ import { EvaluateFunction } from "../models/ai/EvaluateFunction";
 import { OptimizationEvaluateFunction } from "../models/ai/OptimizedEvaluateFunction";
 import { MinMax } from "../models/ai/MinMax";
 import { AlphaBeta } from "../models/ai/AlphaBeta";
+import { IterativeDeepeningSearch } from "../models/ai/IterativeDeepeningSearch";
+import { HeuristicFunction } from "../models/ai/HeuristicFunction";
 
 const aiPlayers: AIBase[] = [];
 const aiScripts = {
   EvaluateFunction,
   OptimizationEvaluateFunction,
   MinMax,
-  AlphaBeta
+  AlphaBeta,
+  IterativeDeepeningSearch,
+  HeuristicFunction
 }
 
 const TimeCostMap = {
-  [PieceType.WHITE]: 0,
-  [PieceType.BLACK]: 0,
+  [PieceType.WHITE]: {
+    costTiem: 0,
+    pruneTime: 0,
+    evaluateTime: 0,
+  },
+  [PieceType.BLACK]: {
+    costTiem: 0,
+    pruneTime: 0,
+    evaluateTime: 0,
+  },
 }
 
 export default {
@@ -39,15 +51,17 @@ export default {
     aiPlayers.push(ai);
   },
   aiMove(pieceType: PieceType) {
-    aiPlayers.forEach(ai => {
+    aiPlayers.forEach(async ai => {
       if (gameState.getState() === GameState.PLAYING && ai.isAITurn(pieceType)) {
         const now = Date.now();
-        const position = ai.getMove();
+        const position = await ai.getMove();
         const timeCost = Date.now() - now;
-        TimeCostMap[pieceType] += timeCost;
+        TimeCostMap[pieceType].costTiem += timeCost;
+        TimeCostMap[pieceType].pruneTime += (ai as any).pruneTime || 0;
+        TimeCostMap[pieceType].evaluateTime += (ai as any).evaluateTime || 0;
         // console.log(timeCost);
         // setTimeout(() => {
-        pieces.addPiece(pieceType, ...position);
+        pieces.addPiece(pieceType, position[0], position[1]);
         // }, 2000);
       }
     });
