@@ -33,7 +33,8 @@ enterStateFuncMap[GameState.PLAYING] = () => {
   // ai.createAIPlayer(PieceType.BLACK, 'MinMax');
   // ai.createAIPlayer(PieceType.WHITE, 'AlphaBeta');
   // ai.createAIPlayer(PieceType.BLACK, 'IterativeDeepeningSearch');
-  ai.createAIPlayer(PieceType.BLACK, 'HeuristicFunction');
+  // ai.createAIPlayer(PieceType.BLACK, 'HeuristicFunction');
+  ai.createAIPlayer(PieceType.BLACK, 'MonteCarloTreeSearch');
   ai.aiMove(PieceType.WHITE);
   }, 1000);
 }

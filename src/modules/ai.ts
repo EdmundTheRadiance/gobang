@@ -9,6 +9,7 @@ import { MinMax } from "../models/ai/MinMax";
 import { AlphaBeta } from "../models/ai/AlphaBeta";
 import { IterativeDeepeningSearch } from "../models/ai/IterativeDeepeningSearch";
 import { HeuristicFunction } from "../models/ai/HeuristicFunction";
+import { MonteCarloTreeSearch } from "../models/ai/MonteCarloTreeSearch";
 
 const aiPlayers: AIBase[] = [];
 const aiScripts = {
@@ -17,7 +18,8 @@ const aiScripts = {
   MinMax,
   AlphaBeta,
   IterativeDeepeningSearch,
-  HeuristicFunction
+  HeuristicFunction,
+  MonteCarloTreeSearch
 }
 
 const TimeCostMap = {
