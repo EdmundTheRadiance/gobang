@@ -34,7 +34,9 @@ enterStateFuncMap[GameState.PLAYING] = () => {
   // ai.createAIPlayer(PieceType.WHITE, 'AlphaBeta');
   // ai.createAIPlayer(PieceType.BLACK, 'IterativeDeepeningSearch');
   // ai.createAIPlayer(PieceType.BLACK, 'HeuristicFunction');
-  ai.createAIPlayer(PieceType.BLACK, 'MonteCarloTreeSearch');
+  // ai.createAIPlayer(PieceType.BLACK, 'MonteCarloTreeSearch');
+  ai.createAIPlayer(PieceType.WHITE, 'ZobristHash');
+  ai.createAIPlayer(PieceType.BLACK, 'ZobristHash');
   ai.aiMove(PieceType.WHITE);
   }, 1000);
 }
@@ -43,10 +45,10 @@ const mod = {
   GameState,
   init() {
     mod.transitionTo(GameState.PLAYING);
-    // event.on(EventName["WIN"], (pieceType: PieceType) => {
-    event.on(EventName["WIN"], () => {
+    event.on(EventName["WIN"], (pieceType: PieceType) => {
+    // event.on(EventName["WIN"], () => {
       mod.transitionTo(GameState.END);
-      // mod.autoPlay(pieceType);
+      mod.autoPlay(pieceType);
     });
     event.on(EventName["RESTART"], () => {
       mod.transitionTo(GameState.PLAYING);

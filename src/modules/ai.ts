@@ -10,6 +10,7 @@ import { AlphaBeta } from "../models/ai/AlphaBeta";
 import { IterativeDeepeningSearch } from "../models/ai/IterativeDeepeningSearch";
 import { HeuristicFunction } from "../models/ai/HeuristicFunction";
 import { MonteCarloTreeSearch } from "../models/ai/MonteCarloTreeSearch";
+import { ZobristHash } from "../models/ai/ZobristHash/ZobristHash";
 
 const aiPlayers: AIBase[] = [];
 const aiScripts = {
@@ -19,7 +20,8 @@ const aiScripts = {
   AlphaBeta,
   IterativeDeepeningSearch,
   HeuristicFunction,
-  MonteCarloTreeSearch
+  MonteCarloTreeSearch,
+  ZobristHash,
 }
 
 const TimeCostMap = {
@@ -27,11 +29,13 @@ const TimeCostMap = {
     costTiem: 0,
     pruneTime: 0,
     evaluateTime: 0,
+    cacheTime: 0,
   },
   [PieceType.BLACK]: {
     costTiem: 0,
     pruneTime: 0,
     evaluateTime: 0,
+    cacheTime: 0,
   },
 }
 
@@ -61,6 +65,7 @@ export default {
         TimeCostMap[pieceType].costTiem += timeCost;
         TimeCostMap[pieceType].pruneTime += (ai as any).pruneTime || 0;
         TimeCostMap[pieceType].evaluateTime += (ai as any).evaluateTime || 0;
+        TimeCostMap[pieceType].cacheTime += (ai as any).cacheTime || 0;
         // console.log(timeCost);
         // setTimeout(() => {
         pieces.addPiece(pieceType, position[0], position[1]);
